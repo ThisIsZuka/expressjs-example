@@ -7,7 +7,8 @@ const dbConfig = {
     server: '43.254.133.123', // You can use your server's IP address or domain here
     database: 'HPCOM7',
     options: {
-        encrypt: true // Use this if you're on Windows Azure
+        encrypt: true, // Use this if you're on Windows Azure
+        trustServerCertificate: true
     }
 };
 
@@ -20,6 +21,17 @@ function getDbConnection() {
         .catch(err => console.log('Database Connection Failed! Bad Config: ', err));
 }
 
+async function executeQuery(query) {
+    try {
+        const pool = await getDbConnection();
+        return await pool.request().query(query);
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
 module.exports = {
-    getDbConnection
+    getDbConnection,
+    executeQuery
 };
